@@ -1,0 +1,72 @@
+{
+  "name": "@protoapps/eslint-config-vue",
+  "version": "0.1.0",
+  "description": "Opinionated ESLint flat config for Vue and TypeScript with accessibility checks",
+  "license": "MIT",
+  "repository": "github:luridev/eslint-config-vue",
+  "homepage": "https://github.com/luridev/eslint-config-vue#readme",
+  "bugs": "https://github.com/luridev/eslint-config-vue/issues",
+  "author": "Anton V.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "clean": "node --input-type=module --eval \"import { rmSync } from 'node:fs'; rmSync('dist', { recursive: true, force: true })\"",
+    "lint": "eslint .",
+    "prepublishOnly": "npm --dry-run=false run validate",
+    "release": "bumpp",
+    "test": "npm run build && node --test",
+    "test:package": "node config/package/verifyPackage.js",
+    "typecheck": "tsc -p tsconfig.json",
+    "validate": "npm run lint && npm run typecheck && npm run test:package"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "eslint",
+    "eslint-config",
+    "typescript",
+    "stylistic",
+    "vue",
+    "accessibility"
+  ],
+  "dependencies": {
+    "@protoapps/eslint-config": "^0.3.1",
+    "eslint-plugin-vue": "^10.9.2",
+    "eslint-plugin-vuejs-accessibility": "^2.5.0",
+    "globals": "^17.7.0",
+    "typescript-eslint": "^8.63.0",
+    "vue-eslint-parser": "^10.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "bumpp": "^12.3.0",
+    "cross-spawn": "^7.0.6",
+    "eslint": "^10.6.0",
+    "jiti": "^2.7.0",
+    "lefthook": "^2.1.14",
+    "publint": "^0.3.24",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "eslint": "^10.4.0",
+    "typescript": "^6.0.0"
+  },
+  "allowScripts": {
+    "lefthook@2.1.14": true,
+    "unrs-resolver": false
+  }
+}
