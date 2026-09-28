@@ -107,7 +107,7 @@ export const createProtoConfig = ({
   languageConfigs = [],
   stylisticIgnores = [],
   ...options
-}: ProtoConfigOptions, ...overrides: Array<Linter.Config>): Array<Linter.Config> => {
+}: ProtoConfigOptions, ...overrides: Parameters<typeof defineConfig>): ReturnType<typeof defineConfig> => {
   const { tsconfigRootDir } = options;
 
   const vueLanguageConfigs = defineConfig(

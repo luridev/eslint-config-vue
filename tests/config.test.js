@@ -4,7 +4,7 @@ import { dirname, join, normalize } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { ESLint } from 'eslint';
-import { createProtoConfig } from '@protoapps/eslint-config-vue';
+import { createProtoConfig } from '../dist/index.js';
 
 const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const consumerRoot = join(packageRoot, 'tests', 'fixtures', 'consumer');
@@ -89,9 +89,33 @@ test('final native overrides win over base, Vue, accessibility, and formatting r
     '@stylistic/semi': 'off',
     '@stylistic/linebreak-style': 'off',
   };
-  const rules = await lintSfc(createEslint({}, { files: ['**/*.vue'], rules: overrides }));
+  const rules = await lintSfc(createEslint({}, [[{
+    files: ['**/*.vue'],
+    extends: [{ rules: overrides }],
+  }]]));
   for (const rule of Object.keys(overrides)) {
     assert.ok(!rules.has(rule), `Unexpected ${rule}`);
   }
   assert.ok(rules.has('@typescript-eslint/no-unnecessary-condition'));
+});
+
+test('language configs and native extends retain policy order and file scope', async () => {
+  const eslint = createEslint({
+    languageConfigs: [[{
+      files: ['**/*.vue'],
+      extends: [{ rules: { 'vue/html-self-closing': 'off', 'no-alert': 'warn', eqeqeq: 'off' } }],
+    }]],
+  }, {
+    files: ['**/component.vue'],
+    extends: [[{ files: ['**/*.vue'], rules: { 'no-alert': 'error' } }]],
+  });
+  const component = await eslint.calculateConfigForFile(sfcPath);
+  const other = await eslint.calculateConfigForFile(join(consumerRoot, 'src/other.vue'));
+  const typescript = await eslint.calculateConfigForFile(join(consumerRoot, 'src/standard.ts'));
+
+  assert.equal(component.rules.eqeqeq[0], 2);
+  assert.equal(component.rules['vue/html-self-closing'][0], 2);
+  assert.equal(component.rules['no-alert'][0], 2);
+  assert.equal(other.rules['no-alert'][0], 1);
+  assert.equal(typescript.rules['no-alert'], undefined);
 });

@@ -24,19 +24,27 @@ Run `eslint .` to lint source files and package.json.
 
 ## Options
 
-`vueVersion` is required and controls `vue/no-unsupported-features`. All
-[base options](https://github.com/luridev/eslint-config#options) are also available, including the required `tsconfigRootDir`.
+`vueVersion` is required and specifies the Vue version to check compatibility against.
+Other options are inherited from [@protoapps/eslint-config](https://github.com/luridev/eslint-config#options),
+including the required `tsconfigRootDir`.
 
 ## Overrides
 
-Pass native ESLint Flat Config objects after the options to override base and Vue rules:
+Pass Flat Config overrides after the options to customize rules:
 
 ```ts
 export default createProtoConfig(
-  { tsconfigRootDir: import.meta.dirname, vueVersion: '3.5.40' },
+  {
+    tsconfigRootDir: import.meta.dirname,
+    vueVersion: '3.5.40',
+  },
   {
     files: ['**/*.{ts,vue}'],
-    rules: { '@typescript-eslint/no-restricted-imports': 'off' },
+    rules: {
+      '@typescript-eslint/no-restricted-imports': 'off',
+    },
   },
 );
 ```
+
+Overrides also accept `extends` and config arrays, as in ESLint's `defineConfig`.
